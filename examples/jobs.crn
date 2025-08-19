@@ -1,0 +1,15 @@
+# Example .crn file
+
+job "daily_report" {
+  schedule:  every weekday at 08:30 Europe/Paris
+  run:       sh "echo 'Hello Paris'"
+  retry:     2 with backoff 5s..20s
+  timeout:   20s
+  jitter:    ±10s
+  overlap:   skip
+}
+
+job "heartbeat" {
+  schedule:  every 1m
+  run:       sh "date"
+}
