@@ -180,7 +180,7 @@ func NextRun(expr string, from time.Time) (time.Time, error) {
 
 		parts := strings.Fields(l)
 		if len(parts) == 0 {
-			return time.Time{}, errors.New("heure manquante")
+			return time.Time{}, errors.New("missing time")
 		}
 		hhmm := parts[0]
 		var loc *time.Location = time.Local
@@ -188,7 +188,7 @@ func NextRun(expr string, from time.Time) (time.Time, error) {
 			tzName := parts[1]
 			lo, err := time.LoadLocation(tzName)
 			if err != nil {
-				return time.Time{}, fmt.Errorf("TZ inconnu: %s", tzName)
+				return time.Time{}, fmt.Errorf("unknown TZ: %s", tzName)
 			}
 			loc = lo
 		}
@@ -206,7 +206,7 @@ func NextRun(expr string, from time.Time) (time.Time, error) {
 		// parse time (and optional tz)
 		parts := strings.Fields(after)
 		if len(parts) == 0 {
-			return time.Time{}, errors.New("heure manquante après 'starting at'")
+			return time.Time{}, errors.New("missing time after 'starting at'")
 		}
 		hhmm := parts[0]
 		loc := time.Local
@@ -224,27 +224,27 @@ func NextRun(expr string, from time.Time) (time.Time, error) {
 		return t.In(from.Location()), nil
 	}
 
-	return time.Time{}, fmt.Errorf("expression non prise en charge (MVP): %q", expr)
+	return time.Time{}, fmt.Errorf("unsupported expression (MVP): %q", expr)
 }
 
 func Explain(j dsl.Job) string {
 	l := strings.ToLower(strings.TrimSpace(j.Schedule))
 	if strings.HasPrefix(l, "every ") && (strings.HasSuffix(l, "s") || strings.HasSuffix(l, "m") || strings.HasSuffix(l, "h") || strings.HasSuffix(l, "d")) && !strings.Contains(l, " at ") {
-		return fmt.Sprintf("toutes les %s", strings.TrimPrefix(l, "every "))
+		return fmt.Sprintf("every %s", strings.TrimPrefix(l, "every "))
 	}
 	if strings.HasPrefix(l, "every weekday at ") {
-		return "les jours ouvrés à " + strings.TrimPrefix(l, "every weekday at ")
+		return "weekdays at " + strings.TrimPrefix(l, "every weekday at ")
 	}
 	if strings.HasPrefix(l, "every day at ") {
-		return "tous les jours à " + strings.TrimPrefix(l, "every day at ")
+		return "every day at " + strings.TrimPrefix(l, "every day at ")
 	}
 	if strings.HasPrefix(l, "at ") {
-		return "tous les jours à " + strings.TrimPrefix(l, "at ")
+		return "every day at " + strings.TrimPrefix(l, "at ")
 	}
 	if strings.Contains(l, " starting at ") {
-		return "périodique " + l
+		return "periodic " + l
 	}
-	return "planification: " + j.Schedule
+	return "schedule: " + j.Schedule
 }
 
 func nextAtTime(from time.Time, hhmm string, loc *time.Location, weekdayOnly bool) time.Time {

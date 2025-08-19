@@ -167,12 +167,12 @@ func Parse(f *os.File) (*Program, error) {
 					cur.Env[k] = v
 				}
 			default:
-				return nil, fmt.Errorf("ligne %d: clé inconnue '%s'", lineno, key)
+				return nil, fmt.Errorf("line %d: unknown key '%s'", lineno, key)
 			}
 		}
 	}
 	if cur != nil {
-		return nil, errors.New("fin de fichier pendant un bloc job")
+		return nil, errors.New("end of file during a job block")
 	}
 	if err := sc.Err(); err != nil {
 		return nil, err
@@ -183,7 +183,7 @@ func Parse(f *os.File) (*Program, error) {
 func parseShortDuration(s string) (time.Duration, error) {
 	m := reDuration.FindStringSubmatch(strings.TrimSpace(s))
 	if m == nil {
-		return 0, fmt.Errorf("durée invalide: %q (attendu Ns|Nm|Nh|Nd)", s)
+		return 0, fmt.Errorf("invalid duration: %q (expected Ns|Nm|Nh|Nd)", s)
 	}
 	n, _ := strconv.Atoi(m[1])
 	switch m[2] {
@@ -196,6 +196,6 @@ func parseShortDuration(s string) (time.Duration, error) {
 	case "d":
 		return time.Duration(n) * 24 * time.Hour, nil
 	default:
-		return 0, fmt.Errorf("unité inconnue")
+		return 0, fmt.Errorf("unknown unit")
 	}
 }
