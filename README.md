@@ -22,14 +22,14 @@
 
 ### Build from source
 ```bash
-git clone https://github.com/Verpica/crono.git
+git clone https://github.com/Verpica/crono-lang.git
 cd crono
 go build -o crono ./cmd/crono
 ```
 
 ### Direct installation
 ```bash
-go install github.com/Verpica/crono/cmd/crono@latest
+go install github.com/Verpica/crono-lang/cmd/crono@latest
 ```
 
 ## 📖 Usage Guide
